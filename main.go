@@ -3,7 +3,6 @@ package main
 import (
 	"evo_optics/components"
 	"fmt"
-	"github.com/fogleman/gg"
 )
 
 func main() {
@@ -17,13 +16,8 @@ func main() {
 		fmt.Printf("%+v", source.Rays[ray])
 	}
 
-	const S = 1024
-	dc := gg.NewContext(S, S)
-	dc.SetRGBA(1, 1, 1, 1)
-	dc.DrawRectangle(0, 0, S, S)
-	dc.Fill()
-	for _, ray := range source.Rays {
-		ray.Draw(dc)
-	}
-	dc.SavePNG("out.png")
+	canvas := components.NewCanvas(1024, 1024)
+	canvas.DrawBackground()
+	canvas.DrawCoordinateSystem()
+	canvas.SavePNG("out.png")
 }
