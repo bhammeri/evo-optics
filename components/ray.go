@@ -44,7 +44,7 @@ func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector) {
 	ray.Segments = append(ray.Segments, RaySegment{StartPoint: startPoint, Direction: direction})
 }
 
-func (ray *Ray) Draw(context *gg.Context) {
+func (ray *Ray) Draw(context *gg.Context, originX float64, originY float64) {
 	numberOfSegments := len(ray.Segments)
 
 	context.SetRGBA(0, 0, 0, 1)
@@ -55,12 +55,12 @@ func (ray *Ray) Draw(context *gg.Context) {
 		nextRaySegment = ray.Segments[i+1]
 		context.Push()
 		context.DrawLine(
-			currentRaySegment.StartPoint.X,
-			currentRaySegment.StartPoint.Y,
-			nextRaySegment.StartPoint.X,
-			nextRaySegment.StartPoint.Y,
+			currentRaySegment.StartPoint.X+originX,
+			currentRaySegment.StartPoint.Y+originY,
+			nextRaySegment.StartPoint.X+originX,
+			nextRaySegment.StartPoint.Y+originY,
 		)
-		context.Fill()
+		context.Stroke()
 		context.Pop()
 	}
 }

@@ -4,9 +4,14 @@ import (
 	"github.com/fogleman/gg"
 )
 
+type Drawable interface {
+	Draw(context *gg.Context, originX float64, originY float64)
+}
+
 type Canvas struct {
 	Width           int
 	Height          int
+	padding         int
 	availableWidth  int
 	availableHeight int
 	OriginX         int
@@ -14,13 +19,14 @@ type Canvas struct {
 	GGContext       *gg.Context
 }
 
-func NewCanvas(width int, height int) *Canvas {
+func NewCanvas(width int, height int, padding int) *Canvas {
 	canvas := Canvas{
 		Width:           width,
 		Height:          height,
-		availableWidth:  width - 60,
-		availableHeight: (height / 2) - 60,
-		OriginX:         30,
+		padding:         padding,
+		availableWidth:  width - (padding * 2),
+		availableHeight: (height / 2) - (padding * 2),
+		OriginX:         padding,
 		OriginY:         height / 2,
 		GGContext:       gg.NewContext(width, height),
 	}
@@ -50,7 +56,7 @@ func (canvas *Canvas) DrawCoordinateSystem() {
 		float64(canvas.OriginX),
 		float64(canvas.OriginY),
 		float64(canvas.OriginX),
-		float64(canvas.OriginY+canvas.availableHeight),
+		float64(canvas.padding),
 	)
 	dc.Stroke()
 	dc.Pop()
@@ -58,4 +64,8 @@ func (canvas *Canvas) DrawCoordinateSystem() {
 
 func (canvas *Canvas) SavePNG(filename string) {
 	canvas.GGContext.SavePNG(filename)
+}
+
+func (canvas *Canvas) Draw(element Drawable) {
+	element.Draw(canvas.GGContext, float64(canvas.OriginX), float64(canvas.OriginY))
 }
