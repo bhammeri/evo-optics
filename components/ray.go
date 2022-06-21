@@ -37,7 +37,8 @@ type RaySegment struct {
 }
 
 type Ray struct {
-	Segments []RaySegment
+	Segments   []RaySegment
+	WaveLength int `unit:"nm"`
 }
 
 func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector) {
