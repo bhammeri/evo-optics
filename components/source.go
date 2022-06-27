@@ -21,7 +21,7 @@ func (source *PointSource) InitRays(numberOfRays int, openingAngle Radiant) {
 	var angle Radiant
 	for i := 0; i < numberOfRays; i++ {
 		angle = Radiant(startAngle + angleIncrement*float64(i))
-		newRay = Ray{}
+		newRay = Ray{WaveLength: 320.0}
 		newRay.AddSegment(source.Location, NewDirectionVector(source.Location, angle))
 		directionVector := NewDirectionVector(source.Location, angle)
 		point := Point{

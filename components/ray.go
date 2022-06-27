@@ -31,14 +31,15 @@ func NewDirectionVector(point Point, angle Radiant) DirectionVector {
 }
 
 type RaySegment struct {
-	StartPoint  Point
-	Direction   DirectionVector
-	Terminating bool
+	StartPoint      Point
+	Direction       DirectionVector
+	Terminating     bool
+	RefractionIndex float64
 }
 
 type Ray struct {
 	Segments   []RaySegment
-	WaveLength int `unit:"nm"`
+	WaveLength float64 `unit:"nm"`
 }
 
 func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector) {
@@ -47,8 +48,8 @@ func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector) {
 
 func (ray *Ray) Draw(context *gg.Context, originX float64, originY float64) {
 	numberOfSegments := len(ray.Segments)
-
-	context.SetRGBA(0, 0, 0, 1)
+	r, g, b := ray.RGB()
+	context.SetRGBA(r, g, b, 1)
 	// last point is the final intersect
 	var currentRaySegment, nextRaySegment RaySegment
 	for i := 0; i < numberOfSegments-1; i++ {
@@ -64,4 +65,64 @@ func (ray *Ray) Draw(context *gg.Context, originX float64, originY float64) {
 		context.Stroke()
 		context.Pop()
 	}
+}
+
+func (ray *Ray) RGB() (red, green, blue float64) {
+	// https://stackoverflow.com/questions/1472514/convert-light-frequency-to-rgb
+	waveLength := ray.WaveLength
+	switch {
+	case waveLength < 380:
+		red = 0.0
+		green = 0.0
+		blue = 1.0
+	case waveLength < 440:
+		red = -(waveLength - 440) / (440 - 380)
+		green = 0.0
+		blue = 1.0
+	case waveLength < 490:
+		red = 0.0
+		green = (waveLength - 440) / (490 - 440)
+		blue = 1.0
+	case waveLength < 510:
+		red = 0.0
+		green = 1.0
+		blue = -(waveLength - 510) / (580 - 510)
+	case waveLength < 580:
+		red = (waveLength - 510) / (580 - 510)
+		green = 1.0
+		blue = 0.0
+	case waveLength < 645:
+		red = 1.0
+		green = -(waveLength - 645) / (645 - 580)
+		blue = 0.0
+	case waveLength >= 645:
+		red = 1.0
+		green = 0.0
+		blue = 0.0
+	}
+
+	var factor float64
+	switch {
+	case waveLength > 250 && waveLength < 420:
+		factor = 0.3 + 0.7*(waveLength-250)/(420-250)
+	case waveLength < 701:
+		factor = 1.0
+	case waveLength < 781:
+		factor = 0.3 + 0.7*(780-waveLength)/(780-700)
+	default:
+		factor = 0.0
+	}
+
+	gamma := 0.8
+	if red != 0.0 {
+		red = math.Pow(red*factor, gamma)
+	}
+	if green != 0.0 {
+		green = math.Pow(green*factor, gamma)
+	}
+	if blue != 0.0 {
+		blue = math.Pow(blue*factor, gamma)
+	}
+
+	return red, green, blue
 }
