@@ -1,4 +1,4 @@
-module evo_optics
+module evo-optics
 
 go 1.18
 
