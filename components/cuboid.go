@@ -67,7 +67,7 @@ func (cuboid *Cuboid) BacksideInteractWithRay(ray *Ray) {
 		newDirectionAngle := Radian(math.Asin(float64(lastRaySegment.Direction.Angle) * cuboid.RefractionIndex / constants.REFRACTION_INDEX_OF_VOID))
 		newStartPoint := Point{bottomRight.X, intersectY}
 		newDirection := NewDirectionVector(newStartPoint, newDirectionAngle)
-		ray.AddSegment(newStartPoint, newDirection, cuboid.RefractionIndex)
+		ray.AddSegment(newStartPoint, newDirection, constants.REFRACTION_INDEX_OF_VOID)
 	}
 }
 

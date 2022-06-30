@@ -16,8 +16,15 @@ func main() {
 		Size: 250.0,
 	}
 
-	cuboid := components.Cuboid{
-		Center:          components.Point{X: 250, Y: 0},
+	cuboid1 := components.Cuboid{
+		Center:          components.Point{X: 100, Y: 0},
+		Width:           10,
+		Height:          300,
+		RefractionIndex: 10,
+	}
+
+	cuboid2 := components.Cuboid{
+		Center:          components.Point{X: 300, Y: 0},
 		Width:           50,
 		Height:          300,
 		RefractionIndex: 10,
@@ -27,13 +34,15 @@ func main() {
 	canvas.DrawBackground()
 	canvas.DrawCoordinateSystem()
 	for index := range source.Rays {
-		cuboid.InteractWithRay(&source.Rays[index])
+		cuboid1.InteractWithRay(&source.Rays[index])
+		cuboid2.InteractWithRay(&source.Rays[index])
 		detector.InteractWithRay(&source.Rays[index])
 	}
 	for _, ray := range source.Rays {
 		canvas.Draw(&ray)
 	}
 	canvas.Draw(&detector)
-	canvas.Draw(&cuboid)
+	canvas.Draw(&cuboid1)
+	canvas.Draw(&cuboid2)
 	canvas.SavePNG("out.png")
 }
