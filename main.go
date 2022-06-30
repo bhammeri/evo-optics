@@ -2,7 +2,6 @@ package main
 
 import (
 	"evo-optics/components"
-	"fmt"
 )
 
 func main() {
@@ -17,18 +16,24 @@ func main() {
 		Size: 250.0,
 	}
 
+	cuboid := components.Cuboid{
+		Center:          components.Point{X: 250, Y: 0},
+		Width:           50,
+		Height:          300,
+		RefractionIndex: 10,
+	}
+
 	canvas := components.NewCanvas(1024, 1024, 30)
 	canvas.DrawBackground()
 	canvas.DrawCoordinateSystem()
 	for index := range source.Rays {
+		cuboid.InteractWithRay(&source.Rays[index])
 		detector.InteractWithRay(&source.Rays[index])
-	}
-	for ray := range source.Rays {
-		fmt.Printf("ray: %+v \n\n", source.Rays[ray])
 	}
 	for _, ray := range source.Rays {
 		canvas.Draw(&ray)
 	}
 	canvas.Draw(&detector)
+	canvas.Draw(&cuboid)
 	canvas.SavePNG("out.png")
 }

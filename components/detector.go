@@ -1,6 +1,7 @@
 package components
 
 import (
+	"evo-optics/constants"
 	"github.com/fogleman/gg"
 )
 
@@ -14,8 +15,8 @@ func (detector *Detector) InteractWithRay(ray *Ray) {
 
 	// find intersection point
 	var y float64
-	y = detector.X / lastRaySegment.Direction.End.X * lastRaySegment.Direction.End.Y
-	ray.AddSegment(Point{detector.X, y}, lastRaySegment.Direction)
+	y = lastRaySegment.StartPoint.Y + (detector.X-lastRaySegment.StartPoint.X)/lastRaySegment.Direction.LengthX*lastRaySegment.Direction.LengthY
+	ray.AddSegment(Point{detector.X, y}, lastRaySegment.Direction, constants.REFRACTION_INDEX_OF_VOID)
 }
 
 func (detector *Detector) Draw(context *gg.Context, originX float64, originY float64) {

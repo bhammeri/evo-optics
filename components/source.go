@@ -1,11 +1,13 @@
 package components
 
+import "evo-optics/constants"
+
 type PointSource struct {
 	Location Point
 	Rays     []Ray
 }
 
-func (source *PointSource) InitRays(numberOfRays int, openingAngle Radiant) {
+func (source *PointSource) InitRays(numberOfRays int, openingAngle Radian) {
 	if numberOfRays < 1 {
 		numberOfRays = 1
 	}
@@ -18,11 +20,15 @@ func (source *PointSource) InitRays(numberOfRays int, openingAngle Radiant) {
 		startAngle = float64(-1) * float64(openingAngle) / float64(2)
 	}
 	var newRay Ray
-	var angle Radiant
+	var angle Radian
 	for i := 0; i < numberOfRays; i++ {
-		angle = Radiant(startAngle + angleIncrement*float64(i))
+		angle = Radian(startAngle + angleIncrement*float64(i))
 		newRay = Ray{WaveLength: 320.0}
-		newRay.AddSegment(source.Location, NewDirectionVector(source.Location, angle))
+		newRay.AddSegment(
+			source.Location,
+			NewDirectionVector(source.Location, angle),
+			constants.REFRACTION_INDEX_OF_VOID,
+		)
 		source.Rays = append(source.Rays, newRay)
 	}
 }

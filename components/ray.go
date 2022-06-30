@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-type Radiant float64
+type Radian float64
 
 type Point struct {
 	X float64
@@ -13,20 +13,27 @@ type Point struct {
 }
 
 type DirectionVector struct {
-	Start Point
-	End   Point
-	Angle Radiant
+	Start   Point
+	End     Point
+	LengthX float64
+	LengthY float64
+	Angle   Radian
 }
 
-func NewDirectionVector(point Point, angle Radiant) DirectionVector {
+func NewDirectionVector(point Point, angle Radian) DirectionVector {
+	lengthX := 1.0
+	lengthY := math.Tan(float64(angle))
+
 	endPoint := Point{
-		X: point.X + 1,
-		Y: point.Y + math.Tan(float64(angle)),
+		X: point.X + lengthX,
+		Y: point.Y + lengthY,
 	}
 	return DirectionVector{
-		Start: point,
-		End:   endPoint,
-		Angle: angle,
+		Start:   point,
+		End:     endPoint,
+		LengthX: lengthX,
+		LengthY: lengthY,
+		Angle:   angle,
 	}
 }
 
@@ -42,8 +49,11 @@ type Ray struct {
 	WaveLength float64 `unit:"nm"`
 }
 
-func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector) {
-	ray.Segments = append(ray.Segments, RaySegment{StartPoint: startPoint, Direction: direction})
+func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector, refractionIndex float64) {
+	ray.Segments = append(
+		ray.Segments,
+		RaySegment{StartPoint: startPoint, Direction: direction, RefractionIndex: refractionIndex},
+	)
 }
 
 func (ray *Ray) Draw(context *gg.Context, originX float64, originY float64) {
