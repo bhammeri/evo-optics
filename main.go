@@ -45,4 +45,6 @@ func main() {
 	canvas.Draw(&cuboid1)
 	canvas.Draw(&cuboid2)
 	canvas.SavePNG("out.png")
+
+	detector.ScoreObservations()
 }

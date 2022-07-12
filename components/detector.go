@@ -2,6 +2,7 @@ package components
 
 import (
 	"evo-optics/constants"
+	"fmt"
 	"github.com/fogleman/gg"
 	"math"
 )
@@ -12,10 +13,46 @@ type Observation struct {
 	Ray *Ray
 }
 
+type Observations []Observation
+
+func (observations Observations) CenterOfMass() float64 {
+	// center of mass
+	totalNumberObservations := len(observations)
+	weightedSum := 0.0
+
+	for _, observation := range observations {
+		weightedSum += observation.Y
+	}
+
+	return weightedSum / float64(totalNumberObservations)
+}
+
+func (observations Observations) AbsDistance() float64 {
+	// absolute distance
+	totalDistance := 0.0
+
+	for _, observation := range observations {
+		totalDistance += math.Abs(observation.Y)
+	}
+
+	return totalDistance
+}
+
+func (observations Observations) RMSDistance() float64 {
+	// root mean square distance
+	totalDistance := 0.0
+
+	for _, observation := range observations {
+		totalDistance += math.Pow(observation.Y, 2)
+	}
+
+	return math.Sqrt(totalDistance / float64(len(observations)))
+}
+
 type Detector struct {
 	X            float64
 	Size         float64
-	Observations []Observation
+	Observations Observations
 }
 
 func (detector *Detector) InteractWithRay(ray *Ray) {
@@ -58,4 +95,14 @@ func (detector *Detector) drawObservations(context *gg.Context, originX float64,
 	for _, observation := range detector.Observations {
 		DrawCross(context, observation.X, observation.Y, originX, originY)
 	}
+}
+
+func (detector *Detector) ScoreObservations() {
+	cm := detector.Observations.CenterOfMass()
+	absDistance := detector.Observations.AbsDistance()
+	rmsDistance := detector.Observations.RMSDistance()
+
+	fmt.Printf("Center of Mass: %.2f \n", cm)
+	fmt.Printf("Absolute Distance: %.2f \n", absDistance)
+	fmt.Printf("RMS Distance: %.2f \n", rmsDistance)
 }
