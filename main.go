@@ -30,6 +30,14 @@ func main() {
 		RefractionIndex: 10,
 	}
 
+	lens1 := components.NewDoubleConvexLens(
+		components.Point{X: 400, Y: 0},
+		200,
+		50,
+		400,
+		400,
+	)
+
 	canvas := components.NewCanvas(1024, 1024, 30)
 	canvas.DrawBackground()
 	canvas.DrawCoordinateSystem()
@@ -44,6 +52,8 @@ func main() {
 	canvas.Draw(&detector)
 	canvas.Draw(&cuboid1)
 	canvas.Draw(&cuboid2)
+	canvas.Draw(&lens1)
+
 	canvas.SavePNG("out.png")
 
 	detector.ScoreObservations()
