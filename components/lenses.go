@@ -8,27 +8,29 @@ import (
 
 func NewDoubleConvexLens(Center utils.Point, Height, Width, Radius1, Radius2 float64) DoubleConvexLens {
 	dcl := DoubleConvexLens{
-		Center:  Center,
-		Height:  Height,
-		Width:   Width,
-		Radius1: Radius1,
-		Radius2: Radius2,
+		Center:       Center,
+		Height:       Height,
+		Width:        Width,
+		FrontSurface: SphericalSurface{Radius: Radius1},
+		BackSurface:  SphericalSurface{Radius: Radius2},
 	}
 	dcl.calculateDimensions()
 	return dcl
 }
 
+type SphericalSurface struct {
+	Radius   float64
+	Center   utils.Point
+	ArcAngle float64
+}
+
 type DoubleConvexLens struct {
-	Center    utils.Point
-	Height    float64
-	Width     float64
-	Radius1   float64
-	Center1   utils.Point
-	ArcAngle1 float64
-	Radius2   float64
-	Center2   utils.Point
-	ArcAngle2 float64
-	Corners   [4]utils.Point
+	Center       utils.Point
+	Height       float64
+	Width        float64
+	FrontSurface SphericalSurface
+	BackSurface  SphericalSurface
+	Corners      [4]utils.Point
 }
 
 func (lens *DoubleConvexLens) calculateDimensions() {
@@ -37,18 +39,18 @@ func (lens *DoubleConvexLens) calculateDimensions() {
 	lens.Corners[2] = utils.Point{lens.Center.X + lens.Width/2, lens.Center.Y + lens.Height/2}
 	lens.Corners[3] = utils.Point{lens.Center.X + lens.Width/2, lens.Center.Y - lens.Height/2}
 
-	lens.Center1 = utils.Point{
-		X: lens.Corners[1].X + math.Sqrt(math.Pow(lens.Radius1, 2)-math.Pow(lens.Height/2, 2)),
+	lens.FrontSurface.Center = utils.Point{
+		X: lens.Corners[1].X + math.Sqrt(math.Pow(lens.FrontSurface.Radius, 2)-math.Pow(lens.Height/2, 2)),
 		Y: lens.Center.Y,
 	}
 
-	lens.Center2 = utils.Point{
-		X: lens.Corners[2].X - math.Sqrt(math.Pow(lens.Radius2, 2)-math.Pow(lens.Height/2, 2)),
+	lens.BackSurface.Center = utils.Point{
+		X: lens.Corners[2].X - math.Sqrt(math.Pow(lens.BackSurface.Radius, 2)-math.Pow(lens.Height/2, 2)),
 		Y: lens.Center.Y,
 	}
 
-	lens.ArcAngle1 = math.Sin(lens.Height / 2 / lens.Radius1)
-	lens.ArcAngle2 = math.Sin(lens.Height / 2 / lens.Radius2)
+	lens.FrontSurface.ArcAngle = math.Sin(lens.Height / 2 / lens.FrontSurface.Radius)
+	lens.BackSurface.ArcAngle = math.Sin(lens.Height / 2 / lens.BackSurface.Radius)
 }
 
 func (lens *DoubleConvexLens) Draw(context *gg.Context, originX float64, originY float64) {
@@ -73,22 +75,22 @@ func (lens *DoubleConvexLens) Draw(context *gg.Context, originX float64, originY
 	// if context is not pushed and popped around DrawArc it also draws a line from the last point it was before
 	context.Push()
 	context.DrawArc(
-		lens.Center1.X+originX,
-		lens.Center1.Y+originY,
-		-lens.Radius1,
-		-lens.ArcAngle1,
-		lens.ArcAngle1,
+		lens.FrontSurface.Center.X+originX,
+		lens.FrontSurface.Center.Y+originY,
+		-lens.FrontSurface.Radius,
+		-lens.FrontSurface.ArcAngle,
+		lens.FrontSurface.ArcAngle,
 	)
 	context.Stroke()
 	context.Pop()
 
 	context.Push()
 	context.DrawArc(
-		lens.Center2.X+originX,
-		lens.Center2.Y+originY,
-		lens.Radius2,
-		-lens.ArcAngle2,
-		lens.ArcAngle2,
+		lens.BackSurface.Center.X+originX,
+		lens.BackSurface.Center.Y+originY,
+		lens.BackSurface.Radius,
+		-lens.BackSurface.ArcAngle,
+		lens.BackSurface.ArcAngle,
 	)
 
 	context.Stroke()
