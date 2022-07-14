@@ -18,12 +18,6 @@ func NewDoubleConvexLens(Center utils.Point, Height, Width, Radius1, Radius2 flo
 	return dcl
 }
 
-type SphericalSurface struct {
-	Radius   float64
-	Center   utils.Point
-	ArcAngle float64
-}
-
 type DoubleConvexLens struct {
 	Center       utils.Point
 	Height       float64

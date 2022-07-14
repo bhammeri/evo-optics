@@ -6,7 +6,15 @@ import (
 	"math"
 )
 
-func NewDirectionVector(point utils.Point, angle utils.Radian) utils.DirectionVector {
+type DirectionVector struct {
+	Start   utils.Point
+	End     utils.Point
+	LengthX float64
+	LengthY float64
+	Angle   utils.Radian
+}
+
+func NewDirectionVector(point utils.Point, angle utils.Radian) DirectionVector {
 	lengthX := 1.0
 	lengthY := math.Tan(float64(angle))
 
@@ -14,7 +22,7 @@ func NewDirectionVector(point utils.Point, angle utils.Radian) utils.DirectionVe
 		X: point.X + lengthX,
 		Y: point.Y + lengthY,
 	}
-	return utils.DirectionVector{
+	return DirectionVector{
 		Start:   point,
 		End:     endPoint,
 		LengthX: lengthX,
@@ -25,7 +33,7 @@ func NewDirectionVector(point utils.Point, angle utils.Radian) utils.DirectionVe
 
 type RaySegment struct {
 	StartPoint      utils.Point
-	Direction       utils.DirectionVector
+	Direction       DirectionVector
 	Terminating     bool
 	RefractionIndex float64
 }
@@ -35,7 +43,7 @@ type Ray struct {
 	WaveLength float64 `unit:"nm"`
 }
 
-func (ray *Ray) AddSegment(startPoint utils.Point, direction utils.DirectionVector, refractionIndex float64) {
+func (ray *Ray) AddSegment(startPoint utils.Point, direction DirectionVector, refractionIndex float64) {
 	ray.Segments = append(
 		ray.Segments,
 		RaySegment{StartPoint: startPoint, Direction: direction, RefractionIndex: refractionIndex},
