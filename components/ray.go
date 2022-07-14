@@ -1,34 +1,20 @@
 package components
 
 import (
+	"evo-optics/utils"
 	"github.com/fogleman/gg"
 	"math"
 )
 
-type Radian float64
-
-type Point struct {
-	X float64
-	Y float64
-}
-
-type DirectionVector struct {
-	Start   Point
-	End     Point
-	LengthX float64
-	LengthY float64
-	Angle   Radian
-}
-
-func NewDirectionVector(point Point, angle Radian) DirectionVector {
+func NewDirectionVector(point utils.Point, angle utils.Radian) utils.DirectionVector {
 	lengthX := 1.0
 	lengthY := math.Tan(float64(angle))
 
-	endPoint := Point{
+	endPoint := utils.Point{
 		X: point.X + lengthX,
 		Y: point.Y + lengthY,
 	}
-	return DirectionVector{
+	return utils.DirectionVector{
 		Start:   point,
 		End:     endPoint,
 		LengthX: lengthX,
@@ -38,8 +24,8 @@ func NewDirectionVector(point Point, angle Radian) DirectionVector {
 }
 
 type RaySegment struct {
-	StartPoint      Point
-	Direction       DirectionVector
+	StartPoint      utils.Point
+	Direction       utils.DirectionVector
 	Terminating     bool
 	RefractionIndex float64
 }
@@ -49,7 +35,7 @@ type Ray struct {
 	WaveLength float64 `unit:"nm"`
 }
 
-func (ray *Ray) AddSegment(startPoint Point, direction DirectionVector, refractionIndex float64) {
+func (ray *Ray) AddSegment(startPoint utils.Point, direction utils.DirectionVector, refractionIndex float64) {
 	ray.Segments = append(
 		ray.Segments,
 		RaySegment{StartPoint: startPoint, Direction: direction, RefractionIndex: refractionIndex},

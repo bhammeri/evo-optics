@@ -1,11 +1,12 @@
 package components
 
 import (
+	"evo-optics/utils"
 	"github.com/fogleman/gg"
 	"math"
 )
 
-func NewDoubleConvexLens(Center Point, Height, Width, Radius1, Radius2 float64) DoubleConvexLens {
+func NewDoubleConvexLens(Center utils.Point, Height, Width, Radius1, Radius2 float64) DoubleConvexLens {
 	dcl := DoubleConvexLens{
 		Center:  Center,
 		Height:  Height,
@@ -18,30 +19,30 @@ func NewDoubleConvexLens(Center Point, Height, Width, Radius1, Radius2 float64) 
 }
 
 type DoubleConvexLens struct {
-	Center    Point
+	Center    utils.Point
 	Height    float64
 	Width     float64
 	Radius1   float64
-	Center1   Point
+	Center1   utils.Point
 	ArcAngle1 float64
 	Radius2   float64
-	Center2   Point
+	Center2   utils.Point
 	ArcAngle2 float64
-	Corners   [4]Point
+	Corners   [4]utils.Point
 }
 
 func (lens *DoubleConvexLens) calculateDimensions() {
-	lens.Corners[0] = Point{lens.Center.X - lens.Width/2, lens.Center.Y - lens.Height/2}
-	lens.Corners[1] = Point{lens.Center.X - lens.Width/2, lens.Center.Y + lens.Height/2}
-	lens.Corners[2] = Point{lens.Center.X + lens.Width/2, lens.Center.Y + lens.Height/2}
-	lens.Corners[3] = Point{lens.Center.X + lens.Width/2, lens.Center.Y - lens.Height/2}
+	lens.Corners[0] = utils.Point{lens.Center.X - lens.Width/2, lens.Center.Y - lens.Height/2}
+	lens.Corners[1] = utils.Point{lens.Center.X - lens.Width/2, lens.Center.Y + lens.Height/2}
+	lens.Corners[2] = utils.Point{lens.Center.X + lens.Width/2, lens.Center.Y + lens.Height/2}
+	lens.Corners[3] = utils.Point{lens.Center.X + lens.Width/2, lens.Center.Y - lens.Height/2}
 
-	lens.Center1 = Point{
+	lens.Center1 = utils.Point{
 		X: lens.Corners[1].X + math.Sqrt(math.Pow(lens.Radius1, 2)-math.Pow(lens.Height/2, 2)),
 		Y: lens.Center.Y,
 	}
 
-	lens.Center2 = Point{
+	lens.Center2 = utils.Point{
 		X: lens.Corners[2].X - math.Sqrt(math.Pow(lens.Radius2, 2)-math.Pow(lens.Height/2, 2)),
 		Y: lens.Center.Y,
 	}

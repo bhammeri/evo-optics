@@ -2,11 +2,12 @@ package main
 
 import (
 	"evo-optics/components"
+	"evo-optics/utils"
 )
 
 func main() {
 	source := components.PointSource{
-		Location: components.Point{0, 0},
+		Location: utils.Point{0, 0},
 		Rays:     []components.Ray{},
 	}
 	source.InitRays(10, 1)
@@ -17,21 +18,21 @@ func main() {
 	}
 
 	cuboid1 := components.Cuboid{
-		Center:          components.Point{X: 100, Y: 0},
+		Center:          utils.Point{X: 100, Y: 0},
 		Width:           10,
 		Height:          300,
 		RefractionIndex: 10,
 	}
 
 	cuboid2 := components.Cuboid{
-		Center:          components.Point{X: 300, Y: 0},
+		Center:          utils.Point{X: 300, Y: 0},
 		Width:           50,
 		Height:          300,
 		RefractionIndex: 10,
 	}
 
 	lens1 := components.NewDoubleConvexLens(
-		components.Point{X: 400, Y: 0},
+		utils.Point{X: 400, Y: 0},
 		200,
 		50,
 		400,

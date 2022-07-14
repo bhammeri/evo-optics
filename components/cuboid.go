@@ -2,12 +2,13 @@ package components
 
 import (
 	"evo-optics/constants"
+	"evo-optics/utils"
 	"github.com/fogleman/gg"
 	"math"
 )
 
 type Cuboid struct {
-	Center          Point
+	Center          utils.Point
 	Height          float64
 	Width           float64
 	RefractionIndex float64
@@ -19,12 +20,12 @@ func (cuboid *Cuboid) InteractWithRay(ray *Ray) {
 }
 
 func (cuboid *Cuboid) FrontInteractWithRay(ray *Ray) {
-	bottomLeft := Point{
+	bottomLeft := utils.Point{
 		X: cuboid.Center.X - (cuboid.Width / 2),
 		Y: cuboid.Center.Y - (cuboid.Height / 2),
 	}
 
-	topLeft := Point{
+	topLeft := utils.Point{
 		X: bottomLeft.X,
 		Y: cuboid.Center.Y + (cuboid.Height / 2),
 	}
@@ -36,24 +37,24 @@ func (cuboid *Cuboid) FrontInteractWithRay(ray *Ray) {
 
 	if intersectY >= bottomLeft.Y && intersectY <= topLeft.Y {
 		// calculate new direction
-		newDirectionAngle := Radian(
+		newDirectionAngle := utils.Radian(
 			math.Asin(
 				math.Sin(float64(lastRaySegment.Direction.Angle)) * lastRaySegment.RefractionIndex / cuboid.RefractionIndex,
 			),
 		)
-		newStartPoint := Point{bottomLeft.X, intersectY}
+		newStartPoint := utils.Point{bottomLeft.X, intersectY}
 		newDirection := NewDirectionVector(newStartPoint, newDirectionAngle)
 		ray.AddSegment(newStartPoint, newDirection, cuboid.RefractionIndex)
 	}
 }
 
 func (cuboid *Cuboid) BacksideInteractWithRay(ray *Ray) {
-	bottomRight := Point{
+	bottomRight := utils.Point{
 		X: cuboid.Center.X + (cuboid.Width / 2),
 		Y: cuboid.Center.Y - (cuboid.Height / 2),
 	}
 
-	topRight := Point{
+	topRight := utils.Point{
 		X: bottomRight.X,
 		Y: cuboid.Center.Y + (cuboid.Height / 2),
 	}
@@ -64,19 +65,19 @@ func (cuboid *Cuboid) BacksideInteractWithRay(ray *Ray) {
 	intersectY = lastRaySegment.StartPoint.Y + (bottomRight.X-lastRaySegment.StartPoint.X)/lastRaySegment.Direction.LengthX*lastRaySegment.Direction.LengthY
 	if intersectY >= bottomRight.Y && intersectY <= topRight.Y {
 		// calculate new direction
-		newDirectionAngle := Radian(math.Asin(float64(lastRaySegment.Direction.Angle) * cuboid.RefractionIndex / constants.REFRACTION_INDEX_OF_VOID))
-		newStartPoint := Point{bottomRight.X, intersectY}
+		newDirectionAngle := utils.Radian(math.Asin(float64(lastRaySegment.Direction.Angle) * cuboid.RefractionIndex / constants.REFRACTION_INDEX_OF_VOID))
+		newStartPoint := utils.Point{bottomRight.X, intersectY}
 		newDirection := NewDirectionVector(newStartPoint, newDirectionAngle)
 		ray.AddSegment(newStartPoint, newDirection, constants.REFRACTION_INDEX_OF_VOID)
 	}
 }
 
 func (cuboid *Cuboid) Draw(context *gg.Context, originX float64, originY float64) {
-	bottomLeft := Point{
+	bottomLeft := utils.Point{
 		X: cuboid.Center.X + originX - (cuboid.Width / 2),
 		Y: cuboid.Center.Y + originY - (cuboid.Height / 2),
 	}
-	topRight := Point{
+	topRight := utils.Point{
 		X: cuboid.Center.X + originX + (cuboid.Width / 2),
 		Y: cuboid.Center.Y + originY + (cuboid.Height / 2),
 	}

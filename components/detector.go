@@ -2,6 +2,7 @@ package components
 
 import (
 	"evo-optics/constants"
+	"evo-optics/utils"
 	"fmt"
 	"github.com/fogleman/gg"
 	"math"
@@ -61,7 +62,7 @@ func (detector *Detector) InteractWithRay(ray *Ray) {
 	// find intersection point
 	var y float64
 	y = lastRaySegment.StartPoint.Y + (detector.X-lastRaySegment.StartPoint.X)/lastRaySegment.Direction.LengthX*lastRaySegment.Direction.LengthY
-	ray.AddSegment(Point{detector.X, y}, lastRaySegment.Direction, constants.REFRACTION_INDEX_OF_VOID)
+	ray.AddSegment(utils.Point{detector.X, y}, lastRaySegment.Direction, constants.REFRACTION_INDEX_OF_VOID)
 
 	if math.Abs(y) <= detector.Size/2 {
 		detector.AddObservation(detector.X, y, ray)
