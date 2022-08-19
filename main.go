@@ -12,6 +12,8 @@ func main() {
 	}
 	source.InitRays(10, 1)
 
+	// todo: all drawable components need to get the drawing context
+	// when they are constructed. Also a debug flag that will draw intersection points for example.
 	detector := components.Detector{
 		X:    500.0,
 		Size: 250.0,
