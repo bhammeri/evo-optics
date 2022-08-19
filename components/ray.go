@@ -44,6 +44,7 @@ type Ray struct {
 }
 
 func (ray *Ray) AddSegment(startPoint utils.Point, direction DirectionVector, refractionIndex float64) {
+	// todo: refactor to take startPoint and angle and construct DirectionVector inside Ray
 	ray.Segments = append(
 		ray.Segments,
 		RaySegment{StartPoint: startPoint, Direction: direction, RefractionIndex: refractionIndex},

@@ -27,6 +27,18 @@ type DoubleConvexLens struct {
 	Corners      [4]utils.Point
 }
 
+func (lens *DoubleConvexLens) InteractWithRay(ray *Ray, context *gg.Context, originX float64, originY float64) {
+	lens.FrontInteractWithRay(ray, context, originX, originY)
+	// lens.BacksideInteractWithRay(ray)
+}
+
+func (lens *DoubleConvexLens) FrontInteractWithRay(ray *Ray, context *gg.Context, originX float64, originY float64) {
+	lastRaySegment := &ray.Segments[len(ray.Segments)-1]
+	intersectPoint := lens.FrontSurface.RayIntersect(lastRaySegment)
+
+	DrawCross(context, intersectPoint.X, intersectPoint.Y, originX, originY)
+}
+
 func (lens *DoubleConvexLens) calculateDimensions() {
 	lens.Corners[0] = utils.Point{lens.Center.X - lens.Width/2, lens.Center.Y - lens.Height/2}
 	lens.Corners[1] = utils.Point{lens.Center.X - lens.Width/2, lens.Center.Y + lens.Height/2}

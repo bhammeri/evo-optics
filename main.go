@@ -45,6 +45,7 @@ func main() {
 	for index := range source.Rays {
 		cuboid1.InteractWithRay(&source.Rays[index])
 		cuboid2.InteractWithRay(&source.Rays[index])
+		lens1.InteractWithRay(&source.Rays[index], canvas.GGContext, float64(canvas.OriginX), float64(canvas.OriginY))
 		detector.InteractWithRay(&source.Rays[index])
 	}
 	for _, ray := range source.Rays {
